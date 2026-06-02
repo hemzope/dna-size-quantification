@@ -102,7 +102,23 @@ git clone <repository-url>
 cd <repository-name>
 ```
 
-### 2. Install Dependencies
+
+### 2. Create Virtual Environment (Recommended)
+
+Although this is not necessary for the program to work, it is highly recommended that you create a virtual environment.
+
+Create a virtual environment (venv):
+```bash
+python -m venv <name-of-venv>
+```
+
+Activate the virtual environment:
+```bash
+<name-of-venv>\Scripts\activate
+```
+
+
+### 3. Install Dependencies
 
 A requirements file is included.
 

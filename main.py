@@ -24,34 +24,7 @@ for directory in [
 
 # --------------- INPUT DATA ---------------
 
-# ladder_bp = np.array([
-#     3000, 1500, 1000, 900,
-#     800, 700, 600, 500,
-#     400, 300, 200
-# ])
-
-# ladder_distance = np.array([
-#     262, 397, 518, 552, 590, 624, 682, 
-#     740, 804, 880, 965
-# ])
-
-# evidence_distance = np.array([
-#     365, 465, 585, 828
-# ])
-
-# suspect1_distance = np.array([
-#     272, 373, 430, 730, 833
-# ])
-
-# suspect2_distance = np.array([
-#     335, 445, 573, 822
-# ])
-
-# suspect3_distance = np.array([
-#     340, 445, 570, 610, 827
-# ])
-
-with open("dna_data.json", "r") as f:
+with open("data.json", "r") as f:
     data = json.load(f)
 
 ladder_bp = np.array(
@@ -73,18 +46,16 @@ for suspect_name, suspect_data in data["suspects"].items():
         suspect_data["distance"]
     )
 
-# ============================================================
-# VALIDATION
-# ============================================================
+
+# --------------- VALIDATION ---------------
 
 if len(ladder_bp) != len(ladder_distance):
     raise ValueError(
         "ladder_bp and ladder_distance must have the same number of values."
     )
 
-# ============================================================
-# STANDARD CURVE
-# ============================================================
+
+# --------------- STANDARD CURVE ---------------
 
 ladder_log_bp = np.log10(ladder_bp)
 
@@ -106,14 +77,13 @@ ss_tot = np.sum(
 
 r2 = 1 - (ss_res / ss_tot)
 
-print("\n===== STANDARD CURVE =====")
+print("\n------- STANDARD CURVE -------")
 print(f"Slope      : {slope:.6f}")
 print(f"Intercept  : {intercept:.6f}")
 print(f"R²         : {r2:.6f}")
 
-# ============================================================
-# SAVE LADDER CSV
-# ============================================================
+
+# --------------- SAVE LADDER CSV ---------------
 
 ladder_df = pd.DataFrame({
     "Distance": ladder_distance,
@@ -126,9 +96,8 @@ ladder_df.to_csv(
     index=False
 )
 
-# ============================================================
-# FUNCTIONS
-# ============================================================
+
+# --------------- FUNCTIONS ---------------
 
 def estimate_bp(distances):
     """
@@ -208,8 +177,8 @@ def create_plot(name, distances, folder):
     )
 
     equation = (
-        f"log10(bp) = {slope:.6f}x + {intercept:.6f}\n"
-        f"R² = {r2:.5f}"
+        f"R² = {r2:.5f}\n"
+        f"log10(bp) = {slope:.6f}x + {intercept:.6f}"
     )
 
     plt.text(
@@ -224,7 +193,7 @@ def create_plot(name, distances, folder):
             boxstyle="round",
             facecolor="lightgray",
             edgecolor="black",
-            alpha=0.2
+            alpha=0.6
         )
     )
 
@@ -270,9 +239,8 @@ def matching_error(evidence_log_bp, suspect_log_bp):
         )
     )
 
-# ============================================================
-# SAVE STANDARD CURVE PLOT
-# ============================================================
+
+# --------------- SAVE STANDARD CURVE PLOT ---------------
 
 x_fit = np.linspace(
     ladder_distance.min(),
@@ -316,7 +284,7 @@ plt.text(
         boxstyle="round",
         facecolor="lightgray",
         edgecolor="black",
-        alpha=0.2
+        alpha=0.6
     )
 )
 
@@ -342,9 +310,8 @@ plt.savefig(
 
 plt.close()
 
-# ============================================================
-# PROCESS EVIDENCE
-# ============================================================
+
+# --------------- PROCESS EVIDENCE ---------------
 
 evidence_log_bp, evidence_bp = save_sample_csv(
     "evidence",
@@ -358,9 +325,8 @@ create_plot(
     EVIDENCE_DIR
 )
 
-# ============================================================
-# PROCESS SUSPECTS
-# ============================================================
+
+# --------------- PROCESS SUSPECTS ---------------
 
 scores = []
 
@@ -387,9 +353,8 @@ for name, distances in suspects.items():
         [name, score]
     )
 
-# ============================================================
-# RANK SUSPECTS
-# ============================================================
+
+# --------------- RANK SUSPECTS ---------------
 
 ranking_df = pd.DataFrame(
     scores,
@@ -413,9 +378,8 @@ ranking_df.to_csv(
 
 best_match = ranking_df.iloc[0]
 
-# ============================================================
-# MATCH REPORT
-# ============================================================
+
+# --------------- MATCH REPORT ---------------
 
 report_df = pd.DataFrame({
     "Slope": [slope],
@@ -436,11 +400,10 @@ report_df.to_csv(
     index=False
 )
 
-# ============================================================
-# PRINT SUMMARY
-# ============================================================
 
-print("\n===== SUSPECT RANKING =====")
+# --------------- PRINT SUMMARY ---------------
+
+print("\n------- SUSPECT RANKING -------")
 
 for _, row in ranking_df.iterrows():
     print(
