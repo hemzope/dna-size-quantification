@@ -1,0 +1,23 @@
+{
+
+    "ladder": {
+        "bp": [],
+        "distance": []
+    },
+
+    "evidence": {
+        "distance": []
+    },
+
+    "suspects": {
+        "alice": {
+            "distance": []
+        },
+        "bob": {
+            "distance": []
+        },
+        "charlie": {
+            "distance": []
+        }
+    }
+}
